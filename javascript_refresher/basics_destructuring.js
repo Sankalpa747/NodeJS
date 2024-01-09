@@ -21,7 +21,6 @@ const printName = (personData) => {
 printName(person)
 
 // Use object destructuring
-
 const destructuredMethodPrintName = ({ name }) => {
     console.log(name)
 } 

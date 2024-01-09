@@ -3,20 +3,19 @@
 setTimeout(() => {
     console.log("Timer is done!")
     // Passing a function to 'fetchDate()'
-    fetchDate().then(text => {
+    fetchData().then(text => {
         console.log(text)
     })
-}, 2000)
+}, 2000);
 
-// This method accepts one argument 'callback' and that is a function
-const fetchDate = () => {
+const fetchData = () => {
     const promise = new Promise((resolve, reject) => {
         setTimeout(() => {
             resolve("Done!")
         }, 1500);
     });
     return promise;
-}
+};
 
 // Synchronous
 console.log("Hello")
