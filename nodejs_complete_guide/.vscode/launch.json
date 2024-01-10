@@ -1,0 +1,23 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "skipFiles": [
+                "<node_internals>/**"
+            ],
+            "program": "${workspaceFolder}\\server.js",
+            // Add the following code to restart the application with code changes during the debug mode
+            // For this the nodemon should be installed globally (npm install nodemon -g)
+            "restart": true,
+            "runtimeExecutable": "nodemon",
+            // Everything logs for the terminal
+            "console": "integratedTerminal"
+        }
+    ]
+}
