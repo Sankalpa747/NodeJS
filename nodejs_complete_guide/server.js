@@ -14,9 +14,13 @@ const app = express();
 
 // Parse the body of the request
 app.use(bodyParser.urlencoded({extended: false}));
-// Admin routes
+// Admin and shop routes
 app.use(adminRoutes);
 app.use(shopRoutes);
+// 404 middleware
+app.use((req, res, next) => {
+    res.status(404).send('<h1>Page not found</h1>');
+});
 
 // Listen to the port 3000
 app.listen(3000);
