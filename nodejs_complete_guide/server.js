@@ -10,14 +10,20 @@ const express = require("express");
 const app = express();
 
 // Middleware function
-app.use((req, res, next) => {
-    console.log("In the middleware!");
-    // 'next()' is a function that allows the request to continue to the next middleware function
-    next();
+// app.use((req, res, next) => {
+//     console.log("In the middleware!");
+//     // 'next()' is a function that allows the request to continue to the next middleware function
+//     next();
+// });
+
+// Middleware function for the /add-product route
+app.use("/add-product", (req, res, next) => {
+    console.log("In the add-product middleware!");
+    res.send('<h1>Add Product</h1>');
 });
 
 // Send a response to the client
-app.use((req, res, next) => {
+app.use("/", (req, res, next) => {
     console.log("In the second middleware!");
     res.send('<h1>Hello from the second middleware!</h1>');
 });
