@@ -1,39 +1,22 @@
 // Basic NodeJS (Creating server / Event driven architecture)
 
-// Importing HTTP module (To create a server which listens to HTTP requests and send responses)
-//const http = require("http");
-
 // Importing express module (To create a server which listens to HTTP requests and send responses)
 const express = require("express");
+// Importing body-parser module (To parse the body of the request)
+const bodyParser = require("body-parser");
+
+// Importing routes
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
 
 // Create an express application
 const app = express();
 
-// Middleware function
-// app.use((req, res, next) => {
-//     console.log("In the middleware!");
-//     // 'next()' is a function that allows the request to continue to the next middleware function
-//     next();
-// });
-
-// Middleware function for the /add-product route
-app.use("/add-product", (req, res, next) => {
-    console.log("In the add-product middleware!");
-    res.send('<h1>Add Product</h1>');
-});
-
-// Send a response to the client
-app.use("/", (req, res, next) => {
-    console.log("In the second middleware!");
-    res.send('<h1>Hello from the second middleware!</h1>');
-});
-
-// Create a server
-// Pass the express application to the http server
-//const server = http.createServer(app);
-
-// Server is listening hence the application doesn't stop and keep listening
-//server.listen(3000);
+// Parse the body of the request
+app.use(bodyParser.urlencoded({extended: false}));
+// Admin routes
+app.use(adminRoutes);
+app.use(shopRoutes);
 
 // Listen to the port 3000
 app.listen(3000);
