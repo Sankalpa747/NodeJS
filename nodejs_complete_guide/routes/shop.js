@@ -5,7 +5,7 @@ const express = require("express");
 const router = express.Router();
 
 // Middleware function for the / route
-router.use("/", (req, res, next) => {
+router.get("/", (req, res, next) => {
     console.log("In the shop middleware!");
     res.send('<h1>Hello from the second middleware!</h1>');
 });
