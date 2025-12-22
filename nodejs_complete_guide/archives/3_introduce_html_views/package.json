@@ -1,0 +1,19 @@
+{
+  "name": "nodejs_complete_guide",
+  "version": "1.0.0",
+  "description": "Complete NodeJS Guide",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Sankalpa Wijewickrama",
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  },
+  "dependencies": {
+    "body-parser": "^2.2.1",
+    "express": "^5.2.1"
+  }
+}
