@@ -4,6 +4,8 @@
 const express = require("express");
 // Importing body-parser module (To parse the body of the request)
 const bodyParser = require("body-parser");
+// Importing path module (To join the current directory with the views directory and the page-not-found.html file)
+const path = require("path");
 
 // Importing routes
 const adminRoutes = require("./routes/admin");
@@ -14,12 +16,27 @@ const app = express();
 
 // Parse the body of the request
 app.use(bodyParser.urlencoded({extended: false}));
+// Serve static files from the public directory
+// __dirname - The current directory of the file
+// 'public' - The directory name
+// 'main.css' - The file name
+// With this now we can access the css files in the public directory from the views directory
+// For example, if we have a css file in the public directory called main.css, we can access it in the views directory by using the following code:
+// <link rel="stylesheet" href="/css/main.css">
+// This will serve the main.css file to the client
+app.use(express.static(path.join(__dirname, "public")));
+
 // Admin and shop routes
-app.use(adminRoutes);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
+
 // 404 middleware
 app.use((req, res, next) => {
-    res.status(404).send('<h1>Page not found</h1>');
+    // Join the current directory with the views directory and the page-not-found.html file
+    // __dirname - The current directory of the file
+    // 'views' - The directory name
+    // 'page-not-found.html' - The file name
+    res.status(404).sendFile(path.join(__dirname, "views", "page-not-found.html"));
 });
 
 // Listen to the port 3000
