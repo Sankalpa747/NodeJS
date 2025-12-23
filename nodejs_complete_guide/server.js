@@ -1,10 +1,6 @@
-// Basic NodeJS (Creating server / Event driven architecture)
-
-// Importing express module (To create a server which listens to HTTP requests and send responses)
+// Imports
 const express = require("express");
-// Importing body-parser module (To parse the body of the request)
 const bodyParser = require("body-parser");
-// Importing path module (To join the current directory with the views directory and the page-not-found.html file)
 const path = require("path");
 
 // Create an express application
@@ -39,12 +35,6 @@ app.use(shopRoutes);
 
 // 404 middleware
 app.use((req, res, next) => {
-    // Join the current directory with the views directory and the page-not-found.html file
-    // __dirname - The current directory of the file
-    // 'views' - The directory name
-    // 'page-not-found.html' - The file name
-    //res.status(404).sendFile(path.join(__dirname, "views", "page-not-found.html"));
-
     // Render the page-not-found.pug file
     res.status(404).render("page-not-found", { docTitle: "Page Not Found" });
 });
