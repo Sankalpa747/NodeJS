@@ -1,7 +1,7 @@
 // Importing to work with the file system
 const fs = require("fs");
 
-// Method for handling requets and responses routes
+// Method for handling requests and responses routes
 const requestHandler = (request, response) => {
     // Read from request
     //console.log(request.url, request.method, request.headers);
