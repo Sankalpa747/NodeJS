@@ -1,5 +1,5 @@
-// Array to store the products
-const products = [];
+// Importing the Product model
+const Product = require("../models/product");
 
 /**
  * Get the add product page
@@ -27,7 +27,10 @@ exports.getAddProduct = (req, res, next) => {
  */
 exports.postAddProduct = (req, res, next) => {
     console.log("Product controller - postAddProduct");
-    products.push({title: req.body.title});
+
+    // Create a new product
+    const product = new Product(req.body.title);
+    product.save();
 
     // Redirect to the / route
     res.redirect("/");
@@ -42,13 +45,17 @@ exports.postAddProduct = (req, res, next) => {
 exports.getProducts = (req, res, next) => {
     console.log("Product controller - getProducts");
 
-    // Render the shop.pug file
-    res.render("shop", { 
-        prods: products, 
-        docTitle: "Shop", 
-        path: "/", 
-        hasProducts: products.length > 0,
-        activeShop: true,
-        productCSS: true
+    // Fetch all products
+    // Callback is introduced because the fetchAll method's file operations are asynchronous
+    const products = Product.fetchAll((products) => {
+        // Render the shop.pug file
+        res.render("shop", { 
+            prods: products, 
+            docTitle: "Shop", 
+            path: "/", 
+            hasProducts: products.length > 0,
+            activeShop: true,
+            productCSS: true
+        });
     });
 }
