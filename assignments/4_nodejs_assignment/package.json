@@ -1,0 +1,19 @@
+{
+  "name": "4_nodejs_assignment",
+  "version": "1.0.0",
+  "description": "NodeJS 4th Assignment",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "nodemon server.js"
+  },
+  "author": "Sankalpa Wijewickrama",
+  "license": "ISC",
+  "dependencies": {
+    "ejs": "^3.1.10",
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.11"
+  }
+}

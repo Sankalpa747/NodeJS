@@ -14,7 +14,7 @@ app.set("view engine", "ejs");
 app.set("views", "views");
 
 // Importing routes
-const adminData = require("./routes/admin");
+const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
 
 // Parse the body of the request
@@ -30,13 +30,13 @@ app.use(bodyParser.urlencoded({extended: false}));
 app.use(express.static(path.join(__dirname, "public")));
 
 // Admin and shop routes
-app.use("/admin", adminData.router);
+app.use("/admin", adminRoutes);
 app.use(shopRoutes);
 
 // 404 middleware
 app.use((req, res, next) => {
     // Render the page-not-found.pug file
-    res.status(404).render("page-not-found", { docTitle: "Page Not Found" });
+    res.status(404).render("page-not-found", { docTitle: "Page Not Found", path: "/404" });
 });
 
 // Listen to the port 3000

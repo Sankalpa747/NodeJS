@@ -1,0 +1,16 @@
+<%- include("includes/head"); %>
+</head>
+<body>
+    <%- include("includes/navigation"); %>
+    <h1>Users</h1>
+    <!-- ul with the user names-->
+    <% if (users.length > 0) { %>
+        <ul>
+            <% users.forEach(user => { %>
+                <li><%= user.name %></li>
+            <% }); %>
+        </ul>
+    <% } else { %>
+        <p>No users found</p>
+    <% } %>
+<%- include("includes/end"); %>
