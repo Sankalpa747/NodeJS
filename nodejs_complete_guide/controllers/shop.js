@@ -16,7 +16,7 @@ exports.getProducts = (req, res, next) => {
         // Render the shop.pug file
         res.render("shop/product-list", { 
             prods: products, 
-            docTitle: "All Products", 
+            pageTitle: "All Products", 
             path: "/products", 
         });
     });
@@ -29,9 +29,15 @@ exports.getProducts = (req, res, next) => {
  * @param {Function} next - The next function
  */
 exports.getIndex = (req, res, next) => {
-    res.render("shop/index", {
-        docTitle: "Shop Index",
-        path: "/",
+    // Fetch all products
+    // Callback is introduced because the fetchAll method's file operations are asynchronous
+    const products = Product.fetchAll((products) => {
+        // Render the shop.pug file
+        res.render("shop/index", { 
+            prods: products, 
+            pageTitle: "Shop Index", 
+            path: "/", 
+        });
     });
 }
 
@@ -43,7 +49,7 @@ exports.getIndex = (req, res, next) => {
  */
 exports.getCart = (req, res, next) => {
     res.render("shop/cart", {
-        docTitle: "Your Cart",
+        pageTitle: "Your Cart",
         path: "/cart",
     });
 }
@@ -56,7 +62,7 @@ exports.getCart = (req, res, next) => {
  */
 exports.getCheckout = (req, res, next) => {
     res.render("shop/checkout", {
-        docTitle: "Checkout",
+        pageTitle: "Checkout",
         path: "/checkout",
     });
 }
@@ -69,7 +75,7 @@ exports.getCheckout = (req, res, next) => {
  */
 exports.getOrders = (req, res, next) => {
     res.render("shop/orders", {
-        docTitle: "Your Orders",
+        pageTitle: "Your Orders",
         path: "/orders",
     });
 }

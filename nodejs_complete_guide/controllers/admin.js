@@ -11,7 +11,7 @@ exports.getAddProduct = (req, res, next) => {
     console.log("Product controller - getAddProduct");
     // Render the add-product.pug file
     res.render("admin/add-product", { 
-        docTitle: "Add Product", 
+        pageTitle: "Add Product", 
         path: "/admin/add-product",
         activeAddProduct: true,
         productCSS: true,
@@ -57,7 +57,7 @@ exports.getProducts = (req, res, next) => {
         // Render the shop.pug file
         res.render("admin/products", { 
             prods: products, 
-            docTitle: "Admin Products", 
+            pageTitle: "Admin Products", 
             path: "/products", 
         });
     });
