@@ -3,9 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 // Get the path to the products file
-const p = path.join(path.dirname(require.main.filename), 
-"data", 
-"products.json");
+const p = path.join(path.dirname(require.main.filename), "data", "products.json");
 
 /**
  * Get the products from the file

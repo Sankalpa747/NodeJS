@@ -3,6 +3,10 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
 
+// Importing routes
+const adminRoutes = require("./routes/admin");
+const shopRoutes = require("./routes/shop");
+
 // Importing the 404 controller
 const errorController = require("./controllers/error");
 
@@ -16,20 +20,9 @@ app.set("view engine", "ejs");
 // Set the views directory
 app.set("views", "views");
 
-// Importing routes
-const adminRoutes = require("./routes/admin");
-const shopRoutes = require("./routes/shop");
-
 // Parse the body of the request
 app.use(bodyParser.urlencoded({extended: false}));
-// Serve static files from the public directory
-// __dirname - The current directory of the file
-// 'public' - The directory name
-// 'main.css' - The file name
-// With this now we can access the css files in the public directory from the views directory
-// For example, if we have a css file in the public directory called main.css, we can access it in the views directory by using the following code:
-// <link rel="stylesheet" href="/css/main.css">
-// This will serve the main.css file to the client
+// Serve static files from the public directory (Allows us to access the css files in the public directory from the views directory)
 app.use(express.static(path.join(__dirname, "public")));
 
 // Admin and shop routes
