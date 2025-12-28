@@ -1,5 +1,6 @@
 // Importing the Product model
 const Product = require("../models/product");
+const Cart = require("../models/cart");
 
 /**
  * Get the products page
@@ -18,6 +19,26 @@ exports.getProducts = (req, res, next) => {
             prods: products, 
             pageTitle: "All Products", 
             path: "/products", 
+        });
+    });
+}
+
+/**
+ * Get the product by id page
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @param {Function} next - The next function
+ */
+exports.getProduct = (req, res, next) => {
+    console.log("Product controller - getProduct");
+    // GET PRODUCT BY ID
+    const productId = req.params.productId;
+    Product.findById(productId, (product) => {
+        console.log(product);
+        res.render("shop/product-detail", { 
+            product: product, 
+            pageTitle: product.title, 
+            path: "/products" 
         });
     });
 }
@@ -52,6 +73,24 @@ exports.getCart = (req, res, next) => {
         pageTitle: "Your Cart",
         path: "/cart",
     });
+}
+
+/**
+ * Post the add to cart page
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @param {Function} next - The next function
+ */
+exports.postCart = (req, res, next) => {
+    console.log("Product controller - postCart")
+    const productId = req.body.productId;
+    const price = req.body.price;
+
+    // Add the product to the cart
+    Cart.addProduct(productId, price);
+
+    // Redirect to the cart page
+    res.redirect("/cart");
 }
 
 /**

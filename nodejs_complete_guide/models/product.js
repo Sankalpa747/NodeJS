@@ -29,8 +29,12 @@ module.exports = class Product {
     /**
      * Constructor
      * @param {string} title - The title of the product
+     * @param {string} imageUrl - The image url of the product
+     * @param {string} description - The description of the product
+     * @param {number} price - The price of the product
      */
     constructor(title, imageUrl, description, price) {
+        this.id = Math.random().toString();
         this.title = title;
         this.imageUrl = imageUrl;
         this.description = description;
@@ -61,5 +65,18 @@ module.exports = class Product {
     static fetchAll(callback) {
         // Get the products from the file
         getProductsFromFile(callback);
+    }
+
+    /**
+     * Find a product by id
+     * @param {string} id - The id of the product
+     * @param {Function} callback - The callback function
+     * @returns {void}
+     */
+    static findById(id, callback) {
+        getProductsFromFile((products) => {
+            const product = products.find((p) => p.id === id);
+            callback(product);
+        });
     }
 }

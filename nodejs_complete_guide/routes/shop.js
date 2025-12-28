@@ -13,8 +13,14 @@ router.get("/", shopController.getIndex);
 // Middleware function for the /products route
 router.get("/products", shopController.getProducts);
 
+// Middleware function for the /products/:id route
+router.get("/products/:productId", shopController.getProduct);
+
 // Middleware function for the /cart route
 router.get("/cart", shopController.getCart);
+
+// Middleware function for the /cart route (POST request)
+router.post("/cart", shopController.postCart);
 
 // Middleware function for the /checkout route
 router.get("/checkout", shopController.getCheckout);
