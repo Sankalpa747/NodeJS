@@ -69,9 +69,34 @@ exports.getIndex = (req, res, next) => {
  * @param {Function} next - The next function
  */
 exports.getCart = (req, res, next) => {
-    res.render("shop/cart", {
-        pageTitle: "Your Cart",
-        path: "/cart",
+    // Get the cart from the file
+    Cart.getCart((cart) => {
+        // If the cart is not found, redirect to the home page
+        if (!cart) {
+            return res.redirect("/");
+        }
+
+        // Fetch all products
+        Product.fetchAll((products) => {
+
+            // Create an array to store the cart products
+            const cartProducts = [];
+
+            for (const product of products) {
+                // Find the product in the cart
+                const cartProductData = cart.products.find((prod) => prod.id === product.id);
+                if (cartProductData) {
+                    // Add the product to the cart products array
+                    cartProducts.push({ productData: product, qty: cartProductData.qty });
+                }
+            }
+            
+            res.render("shop/cart", {
+                pageTitle: "Your Cart",
+                path: "/cart",
+                products: cartProducts,
+            });
+        });
     });
 }
 
@@ -91,6 +116,26 @@ exports.postCart = (req, res, next) => {
 
     // Redirect to the cart page
     res.redirect("/cart");
+}
+
+/**
+ * Post the delete item from cart page
+ * @param {Object} req - The request object
+ * @param {Object} res - The response object
+ * @param {Function} next - The next function
+ */
+exports.postCartDeleteProduct = (req, res, next) => {
+    console.log("Product controller - postCartDeleteProduct")
+    const productId = req.body.productId;
+
+    // Fetch the product price
+    Product.findById(productId, (product) => {
+        // If the product is not found, redirect to the home page
+        Cart.deleteProduct(productId, product.price);
+
+        // Redirect to the cart page
+        res.redirect("/cart");
+    });
 }
 
 /**

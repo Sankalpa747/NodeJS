@@ -58,4 +58,61 @@ module.exports = class Cart {
             });
         });
     }
+
+    /**
+     * Delete a product from the cart
+     * @param {string} id - The id of the product
+     * @returns {void}
+     */
+    static deleteProduct(id, productPrice) {
+        // Fetch the previous cart
+        fs.readFile(p, (err, fileContent) => {
+            // If there is an error, return
+            if (err) {
+                return;
+            }
+
+            // Parse the file content
+            const cart = JSON.parse(fileContent);
+
+            // create a new object
+            const updatedCart = { ...cart };
+
+            // Find the product in the cart
+            const product = updatedCart.products.find((prod) => prod.id === id);
+
+            // If the product is not found, return
+            if (!product) {
+                return;
+            }
+
+            // Update the total price
+            const productQty = product.qty;
+            updatedCart.totalPrice = updatedCart.totalPrice - (productPrice * productQty);
+
+            // Remove the product from the cart
+            updatedCart.products = updatedCart.products.filter((prod) => prod.id !== id);
+        
+            // Write the cart to the file
+            fs.writeFile(p, JSON.stringify(updatedCart), (err) => { 
+                console.log(err); 
+            });
+        });
+    }
+
+    /**
+     * Get the cart from the file
+     * @param {Function} callback - The callback function
+     * @returns {void}
+     */
+    static getCart(callback) {
+        fs.readFile(p, (err, fileContent) => {
+            const cart = JSON.parse(fileContent);
+            if (err) {
+                callback(null);
+            } else {
+                callback(cart);
+            }
+        });
+    }
 };

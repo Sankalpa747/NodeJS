@@ -22,6 +22,9 @@ router.get("/cart", shopController.getCart);
 // Middleware function for the /cart route (POST request)
 router.post("/cart", shopController.postCart);
 
+// Middleware function for the /cart-delete-item route (POST request)
+router.post("/cart-delete-item", shopController.postCartDeleteProduct);
+
 // Middleware function for the /checkout route
 router.get("/checkout", shopController.getCheckout);
 
