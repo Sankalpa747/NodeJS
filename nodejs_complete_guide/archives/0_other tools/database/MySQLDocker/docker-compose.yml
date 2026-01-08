@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root123
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+  workbench:
+    image: linuxserver/mysql-workbench:latest
+    container_name: mysql-workbench
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Asia/Colombo
+    ports:
+      - "3001:3000"   # web UI
+    volumes:
+      - workbench_config:/config
+
+volumes:
+  mysql_data:
+  workbench_config:
