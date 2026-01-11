@@ -2,16 +2,13 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const path = require("path");
-
 // Importing routes
 const adminRoutes = require("./routes/admin");
 const shopRoutes = require("./routes/shop");
-
 // Importing the 404 controller
 const errorController = require("./controllers/error");
-
 // Importing the database pool
-const db = require("./util/database");
+const sequelize = require("./util/database");
 
 // Create an express application
 const app = express();
@@ -22,7 +19,6 @@ const app = express();
 app.set("view engine", "ejs");
 // Set the views directory
 app.set("views", "views");
-
 // Parse the body of the request
 app.use(bodyParser.urlencoded({extended: false}));
 // Serve static files from the public directory (Allows us to access the css files in the public directory from the views directory)
@@ -31,9 +27,14 @@ app.use(express.static(path.join(__dirname, "public")));
 // Admin and shop routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
-
 // 404 middleware
 app.use(errorController.get404);
 
-// Listen to the port 3000
-app.listen(3000);
+// Sync the models with the database
+// Tables will be created if they do not exist
+sequelize.sync().then(result => {
+    // Start the server
+    app.listen(3000);
+}).catch(err => {
+    console.log(err);
+});

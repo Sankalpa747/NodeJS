@@ -10,15 +10,13 @@ const Cart = require("../models/cart");
  */
 exports.getProducts = (req, res, next) => {
     console.log("Product controller - getProducts");
-    Product.fetchAll().then(([rows, fieldData]) => {
-        // Render the products page
-        res.render("shop/product-list", { 
-            prods: rows, 
-            pageTitle: "All Products", 
-            path: "/products", 
+    Product.findAll().then(result => {
+        res.render("shop/product-list", {
+            prods: result,
+            pageTitle: "All Products",
+            path: "/products",
         });
-    })
-    .catch(err => {
+    }).catch(err => {
         console.log(err);
     });
 }
@@ -30,18 +28,26 @@ exports.getProducts = (req, res, next) => {
  * @param {Function} next - The next function
  */
 exports.getProduct = (req, res, next) => {
-    console.log("Product controller - getProduct");
-    // GET PRODUCT BY ID
     const productId = req.params.productId;
-    Product.findById(productId).then(([rows, fieldData]) => {
-        console.log(rows);
-        res.render("shop/product-detail", { 
-            product: rows[0], 
-            pageTitle: rows[0].title, 
-            path: "/products" 
+    console.log("Product controller - getProduct, productId: ", productId);
+    // GET PRODUCT BY ID
+    // Product.findAll({ where: { id: req.params.productId } }).then(products => {
+    //     res.render("shop/product-detail", {
+    //         product: products[0],
+    //         pageTitle: products[0].title,
+    //         path: "/products",
+    //     });
+    // }).catch(err => {
+    //     console.log(err);
+    // });
+
+    Product.findByPk(productId).then(product => {   
+        res.render("shop/product-detail", {
+            product: product,
+            pageTitle: product.title,
+            path: "/products",
         });
-    })
-    .catch(err => {
+    }).catch(err => {
         console.log(err);
     });
 }
@@ -54,10 +60,10 @@ exports.getProduct = (req, res, next) => {
  */
 exports.getIndex = (req, res, next) => {
     // Fetch all products
-    Product.fetchAll().then(([rows, fieldData]) => {
+    Product.findAll().then(products => {
         // Render the index page
         res.render("shop/index", { 
-            prods: rows, 
+            prods: products, 
             pageTitle: "Shop Index", 
             path: "/", 
         });

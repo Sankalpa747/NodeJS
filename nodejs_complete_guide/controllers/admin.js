@@ -33,10 +33,13 @@ exports.postAddProduct = (req, res, next) => {
     const price = req.body.price;
 
     // Create a new product
-    const product = new Product(null, title, imageUrl, description, price);
-
-    // Save the product
-    product.save().then(() => {
+    Product.create({
+        title: title,
+        price: price,
+        imageUrl: imageUrl,
+        description: description
+    }).then(result => {
+        console.log("Created product");
         // Redirect to the / route
         res.redirect("/");
     }).catch(err => {
@@ -63,21 +66,22 @@ exports.getEditProduct = (req, res, next) => {
     }
 
     // Find the product by id
-    Product.findById(prodId, (product) => {
+    Product.findByPk(prodId).then(product => {
 
         // If the product is not found, redirect to the home page
         if (!product) {
             return res.redirect("/");
         }
-        console.log(product);
 
         // Render the edit-product.ejs file
-        res.render("admin/edit-product", { 
-            pageTitle: "Edit Product", 
+        res.render("admin/edit-product", {
+            pageTitle: "Edit Product",
             path: "/admin/edit-product",
             product: product,
             editing: editMode,
         });
+    }).catch(err => {
+        console.log(err);
     });
 }
 
@@ -97,12 +101,24 @@ exports.postEditProduct = (req, res, next) => {
     const updatedDescription = req.body.description;
     const updatedPrice = req.body.price;
 
-    // Create a new product
-    const product = new Product(prodId, updatedTitle, updatedImageUrl, updatedDescription, updatedPrice);
-    product.save();
+    // Find the product by id
+    Product.findByPk(prodId).then(product => {
 
-    // Redirect to the /admin/products route
-    res.redirect("/admin/products");    
+        // Update the product
+        product.title = updatedTitle;
+        product.imageUrl = updatedImageUrl;
+        product.description = updatedDescription;
+        product.price = updatedPrice;
+
+        // Save the product
+        return product.save();
+    }).then(result => {
+        console.log("Updated product");
+        // Redirect to the /admin/products route
+        res.redirect("/admin/products");
+    }).catch(err => {
+        console.log(err);
+    });
 }
 
 /**
@@ -113,16 +129,14 @@ exports.postEditProduct = (req, res, next) => {
  */
 exports.getProducts = (req, res, next) => {
     console.log("Product controller - getProducts");
-
-    // Fetch all products
-    // Callback is introduced because the fetchAll method's file operations are asynchronous
-    const products = Product.fetchAll((products) => {
-        // Render the shop.pug file
-        res.render("admin/products", { 
-            prods: products, 
-            pageTitle: "Admin Products", 
-            path: "/products", 
+    Product.findAll().then(products => {
+        res.render("admin/products", {
+            prods: products,
+            pageTitle: "Admin Products",
+            path: "/admin/products",
         });
+    }).catch(err => {
+        console.log(err);
     });
 }
 
