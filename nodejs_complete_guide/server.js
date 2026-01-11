@@ -42,6 +42,14 @@ User.hasMany(Product);
 // Tables will be created if they do not exist
 // sequelize.sync({ force: true }).then(result => { --> Use this to drop the tables and create them again
 sequelize.sync({ force: true }).then(result => {
+    return User.findByPk(1);
+}).then(user => {
+    if (!user) {
+        return User.create({ name: 'Sankalpa', email: 'sankalpa@test.com', password: '123456' });
+    }
+    //return Promise.resolve(user); --> Alternative way to return the user
+    return user;
+}).then(user =>{
     // Start the server
     app.listen(3000);
 }).catch(err => {
