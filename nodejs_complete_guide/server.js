@@ -27,6 +27,16 @@ app.use(bodyParser.urlencoded({extended: false}));
 // Serve static files from the public directory (Allows us to access the css files in the public directory from the views directory)
 app.use(express.static(path.join(__dirname, "public")));
 
+// Middleware to find the user and pass it to the routes
+app.use((req, res, next) => {
+    User.findByPk(1).then(user => {
+        req.user = user;
+        next();
+    }).catch(err => {
+        console.log(err);
+    });
+});
+
 // Admin and shop routes
 app.use("/admin", adminRoutes);
 app.use(shopRoutes);
