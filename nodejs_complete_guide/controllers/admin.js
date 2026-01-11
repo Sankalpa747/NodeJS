@@ -41,7 +41,7 @@ exports.postAddProduct = (req, res, next) => {
     }).then(result => {
         console.log("Created product");
         // Redirect to the / route
-        res.redirect("/");
+        res.redirect("/admin/products");
     }).catch(err => {
         console.log(err);
     });
@@ -129,7 +129,10 @@ exports.postEditProduct = (req, res, next) => {
  */
 exports.getProducts = (req, res, next) => {
     console.log("Product controller - getProducts");
+
+    // Fetch all products
     Product.findAll().then(products => {
+        // Render the admin/products.ejs file
         res.render("admin/products", {
             prods: products,
             pageTitle: "Admin Products",
@@ -150,9 +153,15 @@ exports.postDeleteProduct = (req, res, next) => {
     console.log("Product controller - postDeleteProduct");
     const prodId = req.body.productId;
 
-    // Delete the product by id
-    Product.deleteById(prodId, () => {
+    // Find the product by id
+    Product.findByPk(prodId).then(product => {
+        // Destroy the product
+        return product.destroy();
+    }).then(result => {
+        console.log("Deleted product");
         // Redirect to the /admin/products route
         res.redirect("/admin/products");
+    }).catch(err => {
+        console.log(err);
     });
 }
