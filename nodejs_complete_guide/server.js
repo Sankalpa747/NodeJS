@@ -9,6 +9,9 @@ const shopRoutes = require("./routes/shop");
 const errorController = require("./controllers/error");
 // Importing the database pool
 const sequelize = require("./util/database");
+// Importing the models
+const Product = require("./models/product");
+const User = require("./models/user");
 
 // Create an express application
 const app = express();
@@ -30,9 +33,15 @@ app.use(shopRoutes);
 // 404 middleware
 app.use(errorController.get404);
 
+// Define the relationships between the models
+// onDelete: 'CASCADE' - The product will be deleted if the user is deleted
+Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
+User.hasMany(Product);
+
 // Sync the models with the database
 // Tables will be created if they do not exist
-sequelize.sync().then(result => {
+// sequelize.sync({ force: true }).then(result => { --> Use this to drop the tables and create them again
+sequelize.sync({ force: true }).then(result => {
     // Start the server
     app.listen(3000);
 }).catch(err => {
