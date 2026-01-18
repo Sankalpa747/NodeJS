@@ -79,34 +79,16 @@ exports.getIndex = (req, res, next) => {
  * @param {Function} next - The next function
  */
 exports.getCart = (req, res, next) => {
-    // Get the cart from the file
-    Cart.getCart((cart) => {
-        // If the cart is not found, redirect to the home page
-        if (!cart) {
-            return res.redirect("/");
-        }
-
-        // Fetch all products
-        Product.fetchAll((products) => {
-
-            // Create an array to store the cart products
-            const cartProducts = [];
-
-            for (const product of products) {
-                // Find the product in the cart
-                const cartProductData = cart.products.find((prod) => prod.id === product.id);
-                if (cartProductData) {
-                    // Add the product to the cart products array
-                    cartProducts.push({ productData: product, qty: cartProductData.qty });
-                }
-            }
-            
-            res.render("shop/cart", {
-                pageTitle: "Your Cart",
-                path: "/cart",
-                products: cartProducts,
-            });
+    req.user.getCart().then(cart => {
+        return cart.getProducts();
+    }).then(products => {
+        res.render("shop/cart", {
+            pageTitle: "Your Cart",
+            path: "/cart",
+            products: products,
         });
+    }).catch(err => {
+        console.log(err);
     });
 }
 
@@ -119,13 +101,38 @@ exports.getCart = (req, res, next) => {
 exports.postCart = (req, res, next) => {
     console.log("Product controller - postCart")
     const productId = req.body.productId;
-    const price = req.body.price;
+    let fetchedCart;
+    let newQuantity = 1;
 
-    // Add the product to the cart
-    Cart.addProduct(productId, price);
+    // Get the cart from the user
+    req.user.getCart().then(cart => {
+        fetchedCart = cart;
+        return cart.getProducts({ where: { id: productId } });
+    }).then(products => {
+        let product;
+        if (products.length > 0) {
+            product = products[0];
+        }
 
-    // Redirect to the cart page
-    res.redirect("/cart");
+        if (product) {
+            // Existing product, update the quantity
+            const oldQuantity = product.cartItem.quantity;
+            newQuantity = oldQuantity + 1;
+            return product;
+        }
+
+        // No existing product, create a new one
+        return Product.findByPk(productId)
+    }).then(product => {
+        // Add the product to the cart
+        // This will create or update the intermediate table CartItem with the quantity
+        return fetchedCart.addProduct(product, { through: { quantity: newQuantity } });
+    }).then(() => {
+        // Redirect to the cart page
+        res.redirect("/cart");
+    }).catch(err => {
+        console.log(err);
+    });
 }
 
 /**

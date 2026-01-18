@@ -32,19 +32,35 @@ exports.postAddProduct = (req, res, next) => {
     const description = req.body.description;
     const price = req.body.price;
 
-    // Create a new product
-    Product.create({
+    // Create a new product using the user.createProduct() method
+    req.user.createProduct({
         title: title,
         price: price,
         imageUrl: imageUrl,
-        description: description
+        description: description,
     }).then(result => {
         console.log("Created product");
         // Redirect to the / route
         res.redirect("/admin/products");
     }).catch(err => {
-        console.log(err);
+
     });
+
+    // // Create a new product
+    // // 'userId' is the id of the user who is creating the product and it set via the middleware in server.js (For the moment we are using a dummy user id)
+    // Product.create({
+    //     title: title,
+    //     price: price,
+    //     imageUrl: imageUrl,
+    //     description: description,
+    //     userId: req.user.id
+    // }).then(result => {
+    //     console.log("Created product");
+    //     // Redirect to the / route
+    //     res.redirect("/admin/products");
+    // }).catch(err => {
+    //     console.log(err);
+    // });
 }
 
 /**
@@ -66,7 +82,8 @@ exports.getEditProduct = (req, res, next) => {
     }
 
     // Find the product by id
-    Product.findByPk(prodId).then(product => {
+    req.user.getProducts({ where: { id: prodId } }).then(products => {
+        const product = products[0];
 
         // If the product is not found, redirect to the home page
         if (!product) {
@@ -131,7 +148,7 @@ exports.getProducts = (req, res, next) => {
     console.log("Product controller - getProducts");
 
     // Fetch all products
-    Product.findAll().then(products => {
+    req.user.getProducts().then(products => {
         // Render the admin/products.ejs file
         res.render("admin/products", {
             prods: products,

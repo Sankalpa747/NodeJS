@@ -12,6 +12,8 @@ const sequelize = require("./util/database");
 // Importing the models
 const Product = require("./models/product");
 const User = require("./models/user");
+const Cart = require("./models/cart");
+const CartItem = require("./models/cart-item");
 
 // Create an express application
 const app = express();
@@ -29,7 +31,9 @@ app.use(express.static(path.join(__dirname, "public")));
 
 // Middleware to find the user and pass it to the routes
 app.use((req, res, next) => {
+    console.log("User middleware - find the user and pass it to the routes");
     User.findByPk(1).then(user => {
+        console.log("User middleware - user found", user);
         req.user = user;
         next();
     }).catch(err => {
@@ -45,13 +49,19 @@ app.use(errorController.get404);
 
 // Define the relationships between the models
 // onDelete: 'CASCADE' - The product will be deleted if the user is deleted
+// This association adds methods like user.createProduct() and user.getProducts()
 Product.belongsTo(User, { constraints: true, onDelete: 'CASCADE' });
 User.hasMany(Product);
+User.hasOne(Cart);
+Cart.belongsTo(User);
+// "through: CartItem" - This is the intermediate table between the Cart and Product models
+Cart.belongsToMany(Product, { through: CartItem });
+Product.belongsToMany(Cart, { through: CartItem });
 
 // Sync the models with the database
 // Tables will be created if they do not exist
 // sequelize.sync({ force: true }).then(result => { --> Use this to drop the tables and create them again
-sequelize.sync({ force: true }).then(result => {
+sequelize.sync().then(result => {
     return User.findByPk(1);
 }).then(user => {
     if (!user) {
@@ -60,8 +70,12 @@ sequelize.sync({ force: true }).then(result => {
     //return Promise.resolve(user); --> Alternative way to return the user
     return user;
 }).then(user =>{
+    // Create a cart for the user
+    return user.createCart();
+}).then(cart => {
     // Start the server
     app.listen(3000);
-}).catch(err => {
+})
+.catch(err => {
     console.log(err);
 });
